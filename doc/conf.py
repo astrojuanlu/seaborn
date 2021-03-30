@@ -301,12 +301,21 @@ intersphinx_mapping = {
     'statsmodels': ('https://www.statsmodels.org/stable/', None)
 }
 
-# Build notebooks if on Read the Docs
+# Build notebooks and thumbnails here if on Read the Docs
+# The rest of the build process is done by the actual sphinx command
 import subprocess
 if os.getenv("READTHEDOCS") == "True":
     print("Processing notebooks, please wait...")
     nb_output = subprocess.check_output(
         ["make", "notebooks"],
         env={"NB_KERNEL": "python3", "PATH": os.environ["PATH"]},
+    )
+    print(nb_output.decode(errors="ignore"))
+
+    print("Calling 'make html' first time to generate thumbnails, "
+          "see https://github.com/mwaskom/seaborn/issues/2532")
+    nb_output = subprocess.check_output(
+        ["make", "html"],
+        env={"PATH": os.environ["PATH"]},
     )
     print(nb_output.decode(errors="ignore"))
